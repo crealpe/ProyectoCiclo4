@@ -1,0 +1,86 @@
+use sprint4
+db.createCollection("usuarios")
+//insertar
+db.usuarios.insertOne({
+	mail:"carmenrealpe@gmail.com",
+	password:passwordPrompt(),
+	identificacion:"12345678",
+	nombre:"CarmenRealpe",
+	rol:"administrador", 
+	estado:"pendiente"
+	})
+
+//actualizar
+db.usuarios.updateOne({"_id":ObjectId("619eb19cc5a6bc3a550a0a00")},{$set:{"identificacion":"22222"}})
+
+db.usuarios.updateOne({"_id":ObjectId("619eb19cc5a6bc3a550a0a00")},{$set:{"estado":"autorizado"}})
+
+//consultar
+db.usuarios.find().pretty()
+
+
+db.createCollection("proyectos")
+//insertar
+db.proyectos.insertOne({
+	nombre:"proyecto 1",
+	objetivosGenerales:"objetivo geneal 1",
+	objetivosEspecificos:"objetivo especifico 1",
+	presupuesto:100000, 
+	fechaInicio:null,
+	fechaFin:null,
+	estado:"inactivo",
+	fase:null,
+	liderId:[
+	ObjectId("619eb19cc5a6bc3a550a09ff")
+	]
+	});
+
+//actualizar
+db.proyectos.updateOne({"_id":ObjectId("619eb19cc5a6bc3a550a0a08")},{$set:{"estado":"Activo","fase":"iniciado","fechaInicio":"01/01/2022"}});
+db.proyectos.updateOne({"_id":ObjectId("619eb19cc5a6bc3a550a0a08")},{$set:{"estado":"Activo"}});
+
+//consultar
+db.proyectos.find({"_id":ObjectId("619eb19cc5a6bc3a550a0a08")}).pretty()
+
+
+
+db.createCollection("inscripciones")
+//insertar
+db.inscripciones.insertOne({
+	proyectoId:[
+		ObjectId("619eb19cc5a6bc3a550a0a08")
+	],
+	estudianteId:[
+		ObjectId("619eb19cc5a6bc3a550a0a03")
+	],
+	estado:null,
+	fechaIngreso:null,
+	fechaEgreso:null
+	});
+
+//actualizar
+db.inscripciones.updateOne({"_id":ObjectId("619eb19cc5a6bc3a550a0a0e")},{$set:{"estado":"aceptada","fechaIngreso":"23/11/2021"}})
+//consultar
+db.inscripciones.find().pretty()
+
+
+db.createCollection("avances")
+db.avances.insertOne({
+	proyectoId:[
+		ObjectId("619eb19cc5a6bc3a550a0a0a")
+	],
+	fechaAvance:"24/11/2021",
+	descripcion:"descripcion 1",
+	observacionesLider:["Observacion 1"]
+	});
+
+//actualizar
+db.avances.updateOne({"_id":ObjectId("619eb19dc5a6bc3a550a0a12")},{$set:{"observacionesLider":["observacion 2"]}})
+
+//consultar
+db.avances.find().pretty()
+
+
+
+
+
