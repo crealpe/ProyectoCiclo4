@@ -45,7 +45,7 @@ const resolvers = {
     myInscripciones: async (_, {proyectoId}, { db, user }) => {  //Ver lista de inscripciones por proyecto
     if (!user) { throw new Error('Error de Autenticación, por favor inicie Sesión'); }
     return await db.collection('inscripciones')   //busqueda
-                              .find({ proyectoId: ObjectId(proyectoId._id) })
+                              .find({ proyectoId: ObjectId(proyectoId) })
                               .toArray();
     },
     getInscripcion: async(_, { id }, { db, user }) => {  //Ver una inscripcion por ID
@@ -53,6 +53,18 @@ const resolvers = {
       
       return await db.collection('inscripciones').findOne({ _id: ObjectId(id) });
     },
+
+    myAvances: async (_, {proyectoId}, { db, user }) => {  //Ver lista de avances por proyecto
+      if (!user) { throw new Error('Error de Autenticación, por favor inicie Sesión'); }
+      return await db.collection('avances')   //busqueda
+                                .find({ proyectoId: ObjectId(proyectoId) })
+                                .toArray();
+      },
+      getAvances: async(_, { id }, { db, user }) => {  //Ver una inscripcion por ID
+        if (!user) { throw new Error('Error de Autenticación, por favor inicie Sesión'); }
+        
+        return await db.collection('avances').findOne({ _id: ObjectId(id) });
+      },
   },
 
 //Mutationes
@@ -61,6 +73,7 @@ Mutation: {
         const hashedPassword=bcrypt.hashSync(input.password) //hasheamos la contraseña que viene desde el input
         const newUser={ //Creamos al nuevo usuario
             ...input,
+            
             password:hashedPassword,
         }
     const result= await db.collection("usuarios").insertOne(newUser);  //Funcion asincrona que puede recibir 3 argumentos y regresa un objeto
@@ -255,6 +268,9 @@ start();  //Arrancamos!
 
     myInscripciones(proyectoId: ID!):[inscripciones!]!
     getInscripcion(id: ID!): inscripciones
+
+    myAvances(proyectoId: ID!):[avances!]!
+    getAvances(id: ID!): avances
   }
   
   type user{
