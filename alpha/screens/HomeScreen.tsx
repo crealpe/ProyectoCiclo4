@@ -14,6 +14,10 @@ export default function HomeScreen() {
   const usuarios = async () =>{
     navegation.navigate("Usuarios")
   }
+
+  const proyectos = async () =>{
+    navegation.navigate("Proyectos")
+  }
   
   return (
     <View style={styles.container}>
@@ -39,7 +43,7 @@ export default function HomeScreen() {
       </Pressable>
 
       <Pressable
-      onPress={usuarios} 
+      onPress={proyectos} 
       style={{
         backgroundColor:'blue',
         height:50,

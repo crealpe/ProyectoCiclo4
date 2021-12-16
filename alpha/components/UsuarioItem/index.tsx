@@ -9,7 +9,7 @@ import styles from './styles';
 const UPDATE_USER = gql`
 mutation UpdateUser($updateUserId: ID!, $estado: String!) {
   updateUser(id: $updateUserId, estado: $estado) {
-    myUsers {
+    
       id
       email
       password
@@ -17,10 +17,12 @@ mutation UpdateUser($updateUserId: ID!, $estado: String!) {
       nombre
       rol
       estado
-    }
+   
   }
 }
 `;
+
+
 interface UsuarioItemProps {
   usuario: {
     id: string,
@@ -37,21 +39,27 @@ const UsuarioItem = ({ usuario }: UsuarioItemProps) => {
   const [updateUser] = useMutation(UPDATE_USER);
   
   const onPress = () => {
-    
-    console.log("usuario",usuario.id)
-    console.log("estado",estado)
-    updateUser({
+      updateUser({
       variables: {
-        id: usuario.id,
-        estado:'autorizado'
+        updateUserId: usuario.id,
+        estado: estado
       }
     })
   };
+
+  const onPressN = () => {
+    updateUser({
+    variables: {
+      updateUserId: usuario.id,
+      estado: estado
+    }
+  })
+};
   
   useEffect(() => {
-    setEstado('autorizado');
+    setEstado(estado);
     
-  }, [setEstado])
+  }, [estado])
   
   
 
@@ -62,7 +70,7 @@ const UsuarioItem = ({ usuario }: UsuarioItemProps) => {
         <FontAwesome5 name="user-check" size={24} color="white" />
       </View>
       </Pressable>
-      <Pressable onPress={onPress} style={styles.root}>
+      <Pressable onPress={onPressN} style={styles.root}>
       <View style={styles.iconContainer}>
       <FontAwesome5 name="user-alt-slash" size={24} color="white" />
       </View>

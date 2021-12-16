@@ -2,57 +2,61 @@ import * as React from 'react';
 import { Alert, FlatList, Pressable, StyleSheet } from 'react-native';
 import { Text, View } from '../components/Themed';
 import { useEffect, useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useQuery, gql } from '@apollo/client';
 import alert from '../components/Alert';
 import { AntDesign } from '@expo/vector-icons';
-import ProyectoItem from '../components/ProyectoItem';
+import InscripcionItem from '../components/InscripcionItem';
 
-const MY_PROYECTOS = gql`
-query MyProjects {
-  myProjects {
+const MY_INSCRIPCIONES = gql`
+query MyInscripciones($proyectoId: ID!) {
+  myInscripciones(proyectoId: $proyectoId) {
     id
-    nombre
-    objetivosGenerales
-    objetivosEspecificos
-    prespuesto
-    fechaInicio
-    fechaFin
-    liderId {
+    estudianteId {
       id
       nombre
     }
     estado
-    fase
+    fechaIngreso
+    fechaEgreso
+    proyectoId {
+      id
+      nombre
+    }
   }
 }
 `;
 
-export default function ProyectosScreen() {
+export default function InscripcionesScreen() {
   const navegation= useNavigation();
+  
   const logOut = async () => {
     await AsyncStorage.removeItem('token');
     navegation.navigate("SignIn")
   }
 
- const nuevoProyecto = async () =>{
-    //navegation.navigate("NuevoProyecto")
+ const nuevaInscripcion = async () =>{
+    //navegation.navigate("NuevaInscripcion")
   }
 
-  const [proyectos, setProyectos] = useState([]);
+  const [inscripciones, setInscripciones] = useState([]);
+  const route = useRoute();
+  const id = route.params.id;
 
-  const { data, error, loading } = useQuery(MY_PROYECTOS)
+  const { data, error, loading } = useQuery(MY_INSCRIPCIONES,{ variables: { proyectoId:id }})
+
+  
 
   useEffect(() => {
     if (error) {
-      alert("Error Cargando los proyectos. Intenta de Nuevo")
+      alert("Error Cargando las inscripciones. Intenta de Nuevo")
     }
   }, [error]);
 
   useEffect(() => {
     if (data) {
-      setProyectos(data.myProjects);
+        setInscripciones(data.myInscripciones);
     }
   }, [data]);
 
@@ -82,15 +86,14 @@ export default function ProyectosScreen() {
           Cerrar Sesión
         </Text>
       </Pressable>
-      
-      <Text style={styles.title}>LISTA DE PROYECTOS</Text>
+      <Text style={styles.title}>LISTA DE INSCRIPCIONES</Text>
       <FlatList
-        data={proyectos}
-        renderItem={({item}) => <><ProyectoItem proyecto={item} /></>}
+        data={inscripciones}
+        renderItem={({item}) => <><InscripcionItem inscripcion={item} /></>}
         style={{ width: '100%' }}
       />
       <Pressable
-      onPress={nuevoProyecto} 
+      onPress={nuevaInscripcion} 
       style={{
         backgroundColor:'blue',
         height:50,
@@ -107,7 +110,7 @@ export default function ProyectosScreen() {
           fontSize:18,
           fontWeight:"bold"
         }}>
-          Nuevo Proyecto
+          Nueva Inscripción
         </Text>
       </Pressable>
     </View>

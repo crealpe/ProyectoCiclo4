@@ -23,6 +23,8 @@ import SignUpScreen from '../screens/SignUpScreen';
 import SplashScreen from '../screens/SplashScreen';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
+import ProyectosScreen from '../screens/ProyectosScreen';
+import InscripcionesScreen from '../screens/InscripcionesScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -50,6 +52,8 @@ function RootNavigator() {
       <Stack.Screen name="SignIn" component={SignInScreen} />
       <Stack.Screen name="SignUp" component={SignUpScreen} />
       <Stack.Screen name="Usuarios" component={UsuariosScreen} />
+      <Stack.Screen name="Proyectos" component={ProyectosScreen} />
+      <Stack.Screen name="Inscripciones" component={InscripcionesScreen} />
     </Stack.Navigator>
   );
 }

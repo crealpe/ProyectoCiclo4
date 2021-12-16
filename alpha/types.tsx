@@ -23,8 +23,9 @@ export type RootStackParamList = {
   SignIn: undefined;
   SignUp: undefined;
   Splash:undefined;
-  Projects:undefined;
+  Proyectos:undefined;
   Usuarios:undefined;
+  Inscripciones:undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<
