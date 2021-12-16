@@ -21,6 +21,7 @@ import UsuariosScreen from '../screens/UsuariosScreen';
 import SignInScreen from '../screens/SignInScreen';
 import SignUpScreen from '../screens/SignUpScreen';
 import SplashScreen from '../screens/SplashScreen';
+import ProyectoForm from '../screens/ProyectoForm';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 import ProyectosScreen from '../screens/ProyectosScreen';
@@ -54,6 +55,7 @@ function RootNavigator() {
       <Stack.Screen name="Usuarios" component={UsuariosScreen} />
       <Stack.Screen name="Proyectos" component={ProyectosScreen} />
       <Stack.Screen name="Inscripciones" component={InscripcionesScreen} />
+      <Stack.Screen name="NuevoProyecto" component={ProyectoForm} />
     </Stack.Navigator>
   );
 }
