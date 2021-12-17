@@ -23,7 +23,7 @@ query MyUsers {
   }
 `;
 
-export default function ProjectsScreen() {
+export default function UsuariosScreen() {
   const navegation= useNavigation();
   const logOut = async () => {
     await AsyncStorage.removeItem('token');
@@ -36,20 +36,24 @@ export default function ProjectsScreen() {
 
   const [usuarios, setUsuarios] = useState([]);
 
-  const { data, error, loading } = useQuery(MY_USUARIOS)
-
+  const { data, error, loading, refetch} = useQuery(MY_USUARIOS)
+  
   useEffect(() => {
     if (error) {
       alert("Error Cargando los usuarios. Intenta de Nuevo")
     }
   }, [error]);
-
+  
   useEffect(() => {
     if (data) {
       setUsuarios(data.myUsers);
+      refetch();
     }
   }, [data]);
 
+  if (!usuarios) {
+    return null;
+  }
 
 
   return (
@@ -116,7 +120,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign:"center",
     padding: 5,
-    color:"white",
+    color:"black",
     width:"80%",
     marginHorizontal:"10%",
     marginBottom:30

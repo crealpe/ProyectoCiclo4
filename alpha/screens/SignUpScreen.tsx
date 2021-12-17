@@ -33,7 +33,7 @@ const SignUpScreen =() => {
   const [nombre, setNombre]=useState("")
   const [identificacion, setIdentificacion]=useState("")
   const [password, setPassword]=useState("")
-  const [rol, setRol] = useState("");
+  const [rol, setRol] = useState("estudiante");
   const navegation= useNavigation();
   const estado = "Pendiente";
   // mutation[0] : A function to trigger the mutation
@@ -57,8 +57,7 @@ const SignUpScreen =() => {
   if (data) {
     AsyncStorage.setItem('token', data.signUp.token)
       .then(() => {
-        console.log("id usuario",data.signUp.id)
-        navegation.navigate("Home",{id:data.signUp.id});
+        navegation.navigate("Home");
       })
   }
 
@@ -145,9 +144,10 @@ const SignUpScreen =() => {
         }}
         onValueChange={(itemValue, itemIndex) => setRol(itemValue)}
       >
-        <Picker.Item label="Estudiante" value="Estudiante" />
-        <Picker.Item label="Administrador" value="Administrador" />
-        <Picker.Item label="Lider" value="Lider"/>
+        
+        <Picker.Item label="Estudiante" value="estudiante" />
+        <Picker.Item label="Administrador" value="administrador" />
+        <Picker.Item label="Lider" value="lider"/>
         
       </Picker>
 

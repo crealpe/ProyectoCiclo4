@@ -1,42 +1,36 @@
-import { useNavigation,useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import * as React from 'react';
 import { useState,useEffect } from 'react';
 import { ActivityIndicator, Alert, Pressable, TextInput } from 'react-native';
 import { Text, View } from '../components/Themed';
 import { useMutation,useQuery, gql } from '@apollo/client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Token } from 'graphql';
+const bcrypt = require('bcryptjs');
 
-
-const SIGN_UP_MUTATION= gql`
-mutation SignUp($email:String!,$password:String!,$identificacion:String!,
-$nombre:String!, $rol:String!, $estado:String!) 
-{
-  signUp(input: {email:$email, password:$password,
-  nombre:$nombre,identificacion:$identificacion,rol:$rol,estado:$estado}) 
-  {
-    token
-    user {
-      email
-      password
-      identificacion
-      nombre
-      rol
-      estado
-    }
+const UPDATE_USER= gql`
+mutation Mutation($updateUserId: ID!,$email: String, $identificacion: String, $nombre: String, $password: String) {
+  updateUser(id: $updateUserId, email: $email, identificacion: $identificacion, nombre: $nombre, password: $password) {
+    id
+    email
+    password
+    identificacion
+    nombre
+    rol
+    estado
   }
-}
-`;
+}`;
 
 const GET_USUARIO= gql`
-query GetUser($getUserId: ID!) {
-    getUser(id: $getUserId) {
-      id
-      email
-      password
-      identificacion
-      nombre
-    }
+query GetUser {
+  getUser {
+    id
+    email
+    password
+    identificacion
+    nombre
   }
+}
 `;
 
 
@@ -48,17 +42,12 @@ const EditarPerfilScreen =() => {
   const [password, setPassword]=useState("")
   
   const navegation= useNavigation();
-  const route = useRoute();
-  const id = route.params.id;
-
-  console.log(id)
- 
-  
+    
   // mutation[0] : A function to trigger the mutation
   // mutation[1] : result object 
   //    { data,error, loading }
-  const { data, error, loading } = useQuery(GET_USUARIO,{ variables: { getUserId:id }})
-
+  const { data, error, loading } = useQuery(GET_USUARIO)
+  const [updateUser] = useMutation(UPDATE_USER);
   
 
   useEffect(() => {
@@ -76,20 +65,17 @@ const EditarPerfilScreen =() => {
     }
   }, [data]);
 
-  {/*if (data){
-    AsyncStorage.setItem("token",data.signUp.token)
-    .then(()=>{
-      AsyncStorage.setItem("rol",data.signUp.rol)
-      if (data.signUp.rol=="Estudiante"){
-        navegation.navigate("Home")
+  
+  const onSubmit = () =>{
+    updateUser({
+      variables: {
+        updateUserId: data.getUser.id,
+        email: email, 
+        identificacion: identificacion, 
+        nombre: nombre, 
+        password:password
       }
     })
-  }*/}
-
-  
-
-  const onSubmit = () =>{
-   // signUp({variables: {email,identificacion, nombre,password}})
   }
  
 
@@ -193,3 +179,7 @@ onPress={onSubmit}
 }
 
 export default EditarPerfilScreen
+function user(arg0: string, user: any) {
+  throw new Error('Function not implemented.');
+}
+

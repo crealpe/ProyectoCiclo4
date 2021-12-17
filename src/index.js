@@ -29,7 +29,13 @@ const resolvers = {
     
     myUsers: async (_, __, { db, user }) => {  //Ver usuarios
       if (!user) { throw new Error('Error de Autenticación, por favor inicie Sesión'); }
-      return await db.collection('usuarios').find().toArray();
+      const us = await db.collection('usuarios').findOne({ _id: ObjectId(user._id) });
+      console.log("usuario",us)
+      if (us.rol==="administrador"){
+        return await db.collection('usuarios').find().toArray();
+      }else if (us.rol==="lider"){
+        return await db.collection('usuarios').find({ rol: "estudiante"}).toArray();  
+      }  
     },
     myProjects: async (_, __, { db, user }) => {  //Ver lista de proyectos por lider
       if (!user) { throw new Error('Error de Autenticación, por favor inicie Sesión'); }
@@ -71,10 +77,10 @@ const resolvers = {
                                   .find({ _id: ObjectId(id) })
                                   .toArray();
         },
-        getUser: async(_, { id }, { db, user }) => {  
+        getUser: async(_, __, { db, user }) => {  
           if (!user) { throw new Error('Error de Autenticación, por favor inicie Sesión'); }
           
-          return await db.collection('usuarios').findOne({ _id: ObjectId(id) });
+          return await db.collection('usuarios').findOne({ _id: ObjectId(user._id) });
         },
   },
 
@@ -105,12 +111,31 @@ Mutation: {
       token: getToken(user), //asignamos un getToken al campo token
     }
   },
-  updateUser : async(_, {id, estado}, {db, user}) =>{   //Actualizar un usuario, La funcion pide el id del objeto a actualizar y el estado nuevo a asignar
+  updateUser : async(_, {id, email, nombre, identificacion, password}, {db, user}) =>{   //Actualizar un usuario, La funcion pide el id del objeto a actualizar y el estado nuevo a asignar
+  if(!user){console.log("No esta autenticado, por favor inicie sesión.")}  //Solo usuarios correctamente logueados lo pueden hacer
+  const hashedPassword=bcrypt.hashSync(password);
+  const isPasswordCorrect = user && bcrypt.compareSync(password, user.password); //compara el hash del password en el input con los que estan en la collecion user
+    if (!user || !isPasswordCorrect) {  //Verificamos si ambas respuestas son true
+      hashedPassword=user.password; //sino son true, lanzamos error
+    } 
+  const result= await db.collection("usuarios") 
+                      .updateOne({_id:ObjectId(id)  //Se actualiza el documento que coincide en su id
+                      },{
+                          $set:{email, nombre, identificacion, hashedPassword} 
+                           //Se setea el nuevo titulo
+                      }
+  )//IMPORTANTE: Si nuestro proyecto necesita que mas campos sean editables, se deben establecer como argumentos y brindarselos a la funcion desde el front(apollo)
+//Si un campo no es editado, es decir, queda en blanco en el front, se puede establecer un if que evalue que si el campo esta en blanco entonces no se ejecuta el update
+//console.log("Tarea Actualizada Correctamente")
+return await db.collection("usuarios").findOne({_id:ObjectId(id)});  //regresa los nuevos valores de la tarea editada
+},
+updateUserEstado : async(_, {id, estado}, {db, user}) =>{   //Actualizar un usuario, La funcion pide el id del objeto a actualizar y el estado nuevo a asignar
   if(!user){console.log("No esta autenticado, por favor inicie sesión.")}  //Solo usuarios correctamente logueados lo pueden hacer
   const result= await db.collection("usuarios") 
                       .updateOne({_id:ObjectId(id)  //Se actualiza el documento que coincide en su id
                       },{
-                          $set:{estado}  //Se setea el nuevo titulo
+                          $set:{estado} 
+                           //Se setea el nuevo titulo
                       }
   )//IMPORTANTE: Si nuestro proyecto necesita que mas campos sean editables, se deben establecer como argumentos y brindarselos a la funcion desde el front(apollo)
 //Si un campo no es editado, es decir, queda en blanco en el front, se puede establecer un if que evalue que si el campo esta en blanco entonces no se ejecuta el update
@@ -284,7 +309,7 @@ start();  //Arrancamos!
     getAvances(id: ID!): avances
 
     myComentarios(id: ID!):[avances!]!
-    getUser(id: ID!): user
+    getUser: user
   }
   
   type user{
@@ -330,7 +355,8 @@ start();  //Arrancamos!
   type Mutation{
     signUp(input:SignUpInput):AuthUser!
     signIn(input:SignInInput):AuthUser!
-    updateUser(id:ID!, estado: String!):user!
+    updateUser(id:ID!, email:String,identificacion:String,nombre:String,password:String):user!
+    updateUserEstado(id:ID!, estado: String):user!
 
     createProyecto(input:proyectoInput):proyectos!
     updateProyecto(id:ID!, fechaInicio: String,fechaFin: String,estado: String,fase:String):proyectos!

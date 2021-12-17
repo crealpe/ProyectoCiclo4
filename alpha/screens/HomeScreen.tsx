@@ -1,27 +1,25 @@
 import * as React from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 import { Text, View } from '../components/Themed';
-import { useNavigation,useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function HomeScreen() {
   const navegation= useNavigation();
-  const route = useRoute();
+ 
   
   const logOut = async () => {
     await AsyncStorage.removeItem('token');
     navegation.navigate("SignIn")
   }
-  if (route.params === undefined)
-  {
-    logOut(); 
-  }
-  const id = route.params.id;
+  
   const usuarios = async () =>{
+    
     navegation.navigate("Usuarios")
+   
   }
   const perfil = async () =>{
-    navegation.navigate("EditarPerfil",{id:id})
+    navegation.navigate("EditarPerfil")
   }
 
   const proyectos = async () =>{

@@ -59,7 +59,7 @@ const AvanceItem = ({ avance }: AvanceItemProps) => {
     
     <View style={{ flexDirection: 'row', alignItems: 'center'}}>
       <View style={styles.iconContainer}>
-      <Pressable onPress={comentarios} >  
+      <Pressable onPress={comentarios} accessible={true} accessibilityLabel="Comentarios Lider" accessibilityHint="Comentarios">  
       <MaterialIcons name="post-add" size={24} color="white" />
       </Pressable>
       </View>

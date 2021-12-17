@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Alert, FlatList, Pressable, StyleSheet } from 'react-native';
+import { Alert, FlatList, Pressable, StyleSheet, ViewBase } from 'react-native';
 import { Text, View } from '../components/Themed';
 import { useEffect, useState } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -37,7 +37,7 @@ export default function AvancesScreen() {
   const id = route.params.id;
 
   
-  const { data, error, loading } = useQuery(MY_AVANCES,{ variables: { proyectoId:id }})
+  const { data, error, loading, refetch } = useQuery(MY_AVANCES,{ variables: { proyectoId:id }})
   async function nuevoAvance (){
     if (data) {
       navegation.navigate("NuevoAvance",{ id:id})
@@ -53,6 +53,7 @@ export default function AvancesScreen() {
   useEffect(() => {
     if (data) {
         setAvances(data.myAvances);
+        
     }
   }, [data]);
 
@@ -69,6 +70,7 @@ export default function AvancesScreen() {
         alignItems:"center",
         justifyContent:"center",
         marginHorizontal:"85%",
+        marginTop:30,
         width:'15%',
         position:"absolute"
 
@@ -88,6 +90,8 @@ export default function AvancesScreen() {
         renderItem={({item}) => <><AvanceItem avance={item} /></>}
         style={{ width: '100%' }}
       />
+      <View style={{
+        flexDirection: 'row'}}>
       <Pressable
       onPress={nuevoAvance} 
       style={{
@@ -109,9 +113,32 @@ export default function AvancesScreen() {
           Nuevo Avance
         </Text>
       </Pressable>
+      <Pressable
+      onPress={() => refetch()}
+      style={{
+        backgroundColor:'blue',
+        height:50,
+        borderRadius:5,
+        alignItems:'center',
+        justifyContent:"center",
+        marginTop:30,
+        width:'20%',
+        marginHorizontal:"5%",
+      }}>  
+      <Text
+        style={{
+          color:"white",
+          fontSize:18,
+          fontWeight:"bold"
+        }}>
+          Refrescar
+        </Text>
+      </Pressable>
+      
+      </View>
     </View>
 
-    
+
 
   );
 }
@@ -142,7 +169,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign:"center",
     padding: 5,
-    color:"white",
+    color:"black",
     width:"80%",
     marginHorizontal:"10%",
     marginBottom:30

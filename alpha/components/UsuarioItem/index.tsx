@@ -7,8 +7,8 @@ import alert from '../Alert';
 import styles from './styles';
 
 const UPDATE_USER = gql`
-mutation UpdateUser($updateUserId: ID!, $estado: String!) {
-  updateUser(id: $updateUserId, estado: $estado) {
+mutation UpdateUserEstado($updateUserId: ID!, $estado: String) {
+  updateUserEstado(id: $updateUserId, estado: $estado) {
     
       id
       email
@@ -36,10 +36,10 @@ interface UsuarioItemProps {
 const UsuarioItem = ({ usuario }: UsuarioItemProps) => {
   const navigation = useNavigation();
   const [estado, setEstado] = useState('');
-  const [updateUser] = useMutation(UPDATE_USER);
+  const [updateUserEstado] = useMutation(UPDATE_USER);
   
   const onPress = () => {
-      updateUser({
+    updateUserEstado({
       variables: {
         updateUserId: usuario.id,
         estado: 'autorizado'
@@ -48,7 +48,7 @@ const UsuarioItem = ({ usuario }: UsuarioItemProps) => {
   };
 
   const onPressN = () => {
-    updateUser({
+    updateUserEstado({
     variables: {
       updateUserId: usuario.id,
       estado: "no autorizado"

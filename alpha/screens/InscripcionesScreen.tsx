@@ -4,7 +4,7 @@ import { Text, View } from '../components/Themed';
 import { useEffect, useState } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useQuery, gql } from '@apollo/client';
+import { useQuery, gql, useMutation } from '@apollo/client';
 import alert from '../components/Alert';
 import { AntDesign } from '@expo/vector-icons';
 import InscripcionItem from '../components/InscripcionItem';
@@ -28,6 +28,24 @@ query MyInscripciones($proyectoId: ID!) {
 }
 `;
 
+const NEW_INSCRIPCION = gql`
+mutation CreateInscripcion($proyectoId: ID!) {
+  createInscripcion(proyectoId: $proyectoId) {
+    id
+    estudianteId {
+      id
+      nombre
+    }
+    estado
+    fechaIngreso
+    fechaEgreso
+    proyectoId {
+      id
+      nombre
+    }
+  }
+}`;
+
 export default function InscripcionesScreen() {
   const navegation= useNavigation();
   
@@ -36,18 +54,11 @@ export default function InscripcionesScreen() {
     navegation.navigate("SignIn")
   }
 
- const nuevaInscripcion = async () =>{
-    //navegation.navigate("NuevaInscripcion")
-  }
-
   const [inscripciones, setInscripciones] = useState([]);
   const route = useRoute();
   const id = route.params.id;
 
-  const { data, error, loading } = useQuery(MY_INSCRIPCIONES,{ variables: { proyectoId:id }})
-
-  
-
+  const { data, error, loading, refetch} = useQuery(MY_INSCRIPCIONES,{ variables: { proyectoId:id }})
   useEffect(() => {
     if (error) {
       alert("Error Cargando las inscripciones. Intenta de Nuevo")
@@ -60,7 +71,20 @@ export default function InscripcionesScreen() {
     }
   }, [data]);
 
-
+  const [createInscripcion, { data: createIdata, error: createIerror}] = useMutation(NEW_INSCRIPCION);
+  
+    if (createIerror) {
+      Alert.alert('Error registrando avance, por favor intente de nuevo')
+    }
+    if (createIdata) {
+      //alert("Inscripcion creada Correctamente")
+      refetch();
+    }
+  const nuevaInscripcion = async () =>{
+    
+    createInscripcion({variables: {proyectoId:id}}); 
+    
+  }
 
   return (
     <View style={styles.container}>
@@ -141,12 +165,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    borderColor:"white",
+    borderColor:"withe",
     borderRadius:2,
     fontWeight: 'bold',
     textAlign:"center",
     padding: 5,
-    color:"white",
+    color:"black",
     width:"80%",
     marginHorizontal:"10%",
     marginBottom:30

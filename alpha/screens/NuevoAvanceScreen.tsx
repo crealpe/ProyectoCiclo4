@@ -11,13 +11,13 @@ const NUEVO_AVANCE= gql`
 mutation CreateAvance($proyectoId: ID!, $descripcion: String!) {
     createAvance(proyectoId: $proyectoId, descripcion: $descripcion) {
       id
+      fechaAvance
+      descripcion
+      observacionesLider
       proyectoId {
         id
         nombre
       }
-      fechaAvance
-      descripcion
-      observacionesLider
     }
   }
 `;
@@ -27,8 +27,7 @@ const NuevoAvanceScreen =() => {
     const navegation= useNavigation();
     const route = useRoute();
     const proyectoId = route.params.id;
-    const dataAnt = route.params.data;
-    const setAvancesAnt=route.params.setAvances;
+    
     const [createrAvance, { data, error, loading }] = useMutation(NUEVO_AVANCE);
     if (error) {
       Alert.alert('Error registrando avance, por favor intente de nuevo')
@@ -43,20 +42,16 @@ const NuevoAvanceScreen =() => {
         }
       })
     }*/}
-    const reload = ()=>{
-      window.location.reload();
-    }
-  
+      
     if (data) {
-          alert("Avance creado Correctamente")
+          //alert("Avance creado Correctamente")
           navegation.navigate("Avances",{ id:proyectoId});
-          reload();
+        
+         
     }
     
     const onSubmit = () =>{
-      console.log(proyectoId)  
-      console.log(descripcion) 
-      createrAvance({variables: {proyectoId,descripcion}})
+        createrAvance({variables: {proyectoId,descripcion}})
     }
    
 

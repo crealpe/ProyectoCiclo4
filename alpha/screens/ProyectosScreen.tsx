@@ -42,7 +42,7 @@ export default function ProyectosScreen() {
 
   const [proyectos, setProyectos] = useState([]);
 
-  const { data, error, loading } = useQuery(MY_PROYECTOS)
+  const { data, error, loading, refetch} = useQuery(MY_PROYECTOS)
 
   useEffect(() => {
     if (error) {
@@ -53,6 +53,7 @@ export default function ProyectosScreen() {
   useEffect(() => {
     if (data) {
       setProyectos(data.myProjects);
+     
     }
   }, [data]);
 
@@ -89,6 +90,8 @@ export default function ProyectosScreen() {
         renderItem={({item}) => <><ProyectoItem proyecto={item} /></>}
         style={{ width: '100%' }}
       />
+      <View style={{
+        flexDirection: 'row'}}>
       <Pressable
       onPress={nuevoProyecto} 
       style={{
@@ -110,6 +113,28 @@ export default function ProyectosScreen() {
           Nuevo Proyecto
         </Text>
       </Pressable>
+      <Pressable
+      onPress={() => refetch()} 
+      style={{
+        backgroundColor:'blue',
+        height:50,
+        borderRadius:5,
+        alignItems:'center',
+        justifyContent:"center",
+        marginTop:30,
+        width:'20%',
+        marginHorizontal:"5%",
+      }}>  
+      <Text
+        style={{
+          color:"white",
+          fontSize:18,
+          fontWeight:"bold"
+        }}>
+          Refrescar
+        </Text>
+      </Pressable>
+      </View>
     </View>
 
     
@@ -143,7 +168,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign:"center",
     padding: 5,
-    color:"white",
+    color:"black",
     width:"80%",
     marginHorizontal:"10%",
     marginBottom:30

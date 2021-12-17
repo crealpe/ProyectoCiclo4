@@ -37,7 +37,7 @@ const SignInScreen = () =>{
   if (data) {
     AsyncStorage.setItem('token', data.signIn.token)
       .then(() => {
-        navegation.navigate("Home",{id:data.signIn.user.id})
+        navegation.navigate("Home")
       })
   }
 
