@@ -1,9 +1,9 @@
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation,useRoute } from '@react-navigation/native';
 import * as React from 'react';
-import { useState } from 'react';
-import { ActivityIndicator, Alert, Picker, Pressable, TextInput } from 'react-native';
+import { useState,useEffect } from 'react';
+import { ActivityIndicator, Alert, Pressable, TextInput } from 'react-native';
 import { Text, View } from '../components/Themed';
-import { useMutation, gql } from '@apollo/client';
+import { useMutation,useQuery, gql } from '@apollo/client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
@@ -16,7 +16,6 @@ $nombre:String!, $rol:String!, $estado:String!)
   {
     token
     user {
-      id
       email
       password
       identificacion
@@ -28,21 +27,54 @@ $nombre:String!, $rol:String!, $estado:String!)
 }
 `;
 
-const SignUpScreen =() => {
+const GET_USUARIO= gql`
+query GetUser($getUserId: ID!) {
+    getUser(id: $getUserId) {
+      id
+      email
+      password
+      identificacion
+      nombre
+    }
+  }
+`;
+
+
+
+const EditarPerfilScreen =() => {
   const [email, setEmail]=useState("")
   const [nombre, setNombre]=useState("")
   const [identificacion, setIdentificacion]=useState("")
   const [password, setPassword]=useState("")
-  const [rol, setRol] = useState("");
+  
   const navegation= useNavigation();
-  const estado = "Pendiente";
+  const route = useRoute();
+  const id = route.params.id;
+
+  console.log(id)
+ 
+  
   // mutation[0] : A function to trigger the mutation
   // mutation[1] : result object 
   //    { data,error, loading }
-  const [signUp, { data, error, loading }] = useMutation(SIGN_UP_MUTATION);
-  if (error) {
-    Alert.alert('Error registrandose, por favor intente de nuevo')
-  }
+  const { data, error, loading } = useQuery(GET_USUARIO,{ variables: { getUserId:id }})
+
+  
+
+  useEffect(() => {
+    if (error) {
+      alert("Error Cargando el usuario. Intenta de Nuevo")
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (data) {
+        setEmail(data.getUser.email);
+        setNombre(data.getUser.nombre)
+        setIdentificacion(data.getUser.identificacion)
+        setPassword(data.getUser.password)
+    }
+  }, [data]);
 
   {/*if (data){
     AsyncStorage.setItem("token",data.signUp.token)
@@ -54,16 +86,10 @@ const SignUpScreen =() => {
     })
   }*/}
 
-  if (data) {
-    AsyncStorage.setItem('token', data.signUp.token)
-      .then(() => {
-        console.log("id usuario",data.signUp.id)
-        navegation.navigate("Home",{id:data.signUp.id});
-      })
-  }
+  
 
   const onSubmit = () =>{
-    signUp({variables: {email,identificacion, nombre,password,rol,estado}})
+   // signUp({variables: {email,identificacion, nombre,password}})
   }
  
 
@@ -73,7 +99,7 @@ const SignUpScreen =() => {
           alignSelf:"center",
           fontSize:25,
           fontWeight:"bold"
-      }}>Registro de Usuario</Text>
+      }}>Editar Usuario</Text>
       
     <TextInput
     placeholder="Nombre Completo"
@@ -134,22 +160,6 @@ const SignUpScreen =() => {
     }}
     />
 
-<Picker
-        selectedValue={rol}
-        style={{
-          color:"black",
-          fontSize:18,
-          marginVertical:25,
-          width:'50%',
-          marginHorizontal:"25%"
-        }}
-        onValueChange={(itemValue, itemIndex) => setRol(itemValue)}
-      >
-        <Picker.Item label="Estudiante" value="Estudiante" />
-        <Picker.Item label="Administrador" value="Administrador" />
-        <Picker.Item label="Lider" value="Lider"/>
-        
-      </Picker>
 
 <Pressable
 onPress={onSubmit} 
@@ -171,35 +181,15 @@ onPress={onSubmit}
         fontSize:18,
         fontWeight:"bold"
       }} >
-        Registrarse
+        Actualizar
         </Text>
   </Pressable>
 
-  <Pressable
-  onPress={() => navegation.navigate("SignIn")}
-    style={{
-      height:50,
-      alignItems:"center",
-      justifyContent:"center",
-      marginTop:30,
-      width:'50%',
-      marginHorizontal:"25%",
-    }}>
-        <Text
-        style={{
-          color:"#004080",
-          fontSize:18,
-          fontWeight:"bold"
-        }}>
-          Iniciar Sesión
-        </Text>
-
-    </Pressable>
-
+ 
     </View>
   );
 
   
 }
 
-export default SignUpScreen
+export default EditarPerfilScreen

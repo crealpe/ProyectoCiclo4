@@ -65,7 +65,7 @@ const ProyectoItem = ({ proyecto }: ProyectoItemProps) => {
     navegation.navigate("Inscripciones",{ id:proyecto.id})
   }
   async function avances() {
-        //navegation.navigate("Avances")
+    navegation.navigate("Avances",{ id:proyecto.id})
     }
   useEffect(() => {
     setEstado('activo');

@@ -2,61 +2,52 @@ import * as React from 'react';
 import { Alert, FlatList, Pressable, StyleSheet } from 'react-native';
 import { Text, View } from '../components/Themed';
 import { useEffect, useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useQuery, gql } from '@apollo/client';
 import alert from '../components/Alert';
 import { AntDesign } from '@expo/vector-icons';
-import ProyectoItem from '../components/ProyectoItem';
+import ComentarioItem from '../components/ComentarioItem';
 
-const MY_PROYECTOS = gql`
-query MyProjects {
-  myProjects {
-    id
-    nombre
-    objetivosGenerales
-    objetivosEspecificos
-    prespuesto
-    fechaInicio
-    fechaFin
-    liderId {
-      id
-      nombre
+const MY_COMENTARIOS = gql`
+query MyComentarios($myComentariosId: ID!) {
+    myComentarios(id: $myComentariosId) {
+      observacionesLider
     }
-    estado
-    fase
   }
-}
 `;
 
-export default function ProyectosScreen() {
+export default function ComentariosScreen() {
   const navegation= useNavigation();
+  
   const logOut = async () => {
     await AsyncStorage.removeItem('token');
     navegation.navigate("SignIn")
   }
 
- const nuevoProyecto = async () =>{
-    navegation.navigate("NuevoProyecto")
-  }
+ 
 
-  const [proyectos, setProyectos] = useState([]);
+  const [comentarios, setComentarios] = useState([]);
+  const route = useRoute();
+  const id = route.params.id;
 
-  const { data, error, loading } = useQuery(MY_PROYECTOS)
+  const { data, error, loading } = useQuery(MY_COMENTARIOS,{ variables: { myComentariosId:id }})
+
+  
 
   useEffect(() => {
     if (error) {
-      alert("Error Cargando los proyectos. Intenta de Nuevo")
+      alert("Error Cargando los comentarios. Intenta de Nuevo")
     }
   }, [error]);
 
   useEffect(() => {
     if (data) {
-      setProyectos(data.myProjects);
+        setComentarios(data.myComentarios);
     }
   }, [data]);
 
-
+  console.log(comentarios)
 
   return (
     <View style={styles.container}>
@@ -82,34 +73,13 @@ export default function ProyectosScreen() {
           Cerrar Sesión
         </Text>
       </Pressable>
-      
-      <Text style={styles.title}>LISTA DE PROYECTOS</Text>
+      <Text style={styles.title}>LISTA DE COMENTARIOS</Text>
       <FlatList
-        data={proyectos}
-        renderItem={({item}) => <><ProyectoItem proyecto={item} /></>}
+        data={comentarios}
+        renderItem={({item}) => <><ComentarioItem comentario={item} /></>}
         style={{ width: '100%' }}
       />
-      <Pressable
-      onPress={nuevoProyecto} 
-      style={{
-        backgroundColor:'blue',
-        height:50,
-        borderRadius:5,
-        alignItems:'center',
-        justifyContent:"center",
-        marginTop:30,
-        width:'20%',
-        marginHorizontal:"5%",
-      }}>  
-      <Text
-        style={{
-          color:"white",
-          fontSize:18,
-          fontWeight:"bold"
-        }}>
-          Nuevo Proyecto
-        </Text>
-      </Pressable>
+      
     </View>
 
     
@@ -148,7 +118,5 @@ const styles = StyleSheet.create({
     marginHorizontal:"10%",
     marginBottom:30
   },
-  time: {
-    color: 'darkgrey'
-  }
+  
 });

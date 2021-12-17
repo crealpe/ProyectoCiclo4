@@ -1,18 +1,27 @@
 import * as React from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 import { Text, View } from '../components/Themed';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation,useRoute } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function HomeScreen() {
   const navegation= useNavigation();
+  const route = useRoute();
+  
   const logOut = async () => {
     await AsyncStorage.removeItem('token');
     navegation.navigate("SignIn")
   }
-
+  if (route.params === undefined)
+  {
+    logOut(); 
+  }
+  const id = route.params.id;
   const usuarios = async () =>{
     navegation.navigate("Usuarios")
+  }
+  const perfil = async () =>{
+    navegation.navigate("EditarPerfil",{id:id})
   }
 
   const proyectos = async () =>{
@@ -21,6 +30,26 @@ export default function HomeScreen() {
   
   return (
     <View style={styles.container}>
+      <Pressable
+      onPress={perfil} 
+      style={{
+        backgroundColor:'blue',
+        height:50,
+        borderRadius:5,
+        alignItems:'center',
+        justifyContent:"center",
+        width:'20%',
+        marginHorizontal:"25%",
+      }}>  
+      <Text
+        style={{
+          color:"white",
+          fontSize:18,
+          fontWeight:"bold"
+        }}>
+          Editar Perfil
+        </Text>
+      </Pressable>
       <Pressable
       onPress={usuarios} 
       style={{
@@ -31,6 +60,7 @@ export default function HomeScreen() {
         justifyContent:"center",
         width:'20%',
         marginHorizontal:"25%",
+        marginTop:20,
       }}>  
       <Text
         style={{

@@ -2,57 +2,57 @@ import * as React from 'react';
 import { Alert, FlatList, Pressable, StyleSheet } from 'react-native';
 import { Text, View } from '../components/Themed';
 import { useEffect, useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useQuery, gql } from '@apollo/client';
 import alert from '../components/Alert';
 import { AntDesign } from '@expo/vector-icons';
-import ProyectoItem from '../components/ProyectoItem';
+import AvanceItem from '../components/AvanceItem';
 
-const MY_PROYECTOS = gql`
-query MyProjects {
-  myProjects {
-    id
-    nombre
-    objetivosGenerales
-    objetivosEspecificos
-    prespuesto
-    fechaInicio
-    fechaFin
-    liderId {
+const MY_AVANCES = gql`
+query MyAvances($proyectoId: ID!) {
+    myAvances(proyectoId: $proyectoId) {
       id
-      nombre
+      fechaAvance
+      descripcion
+      observacionesLider
+      proyectoId {
+        id
+        nombre
+      }
     }
-    estado
-    fase
   }
-}
 `;
 
-export default function ProyectosScreen() {
+export default function AvancesScreen() {
   const navegation= useNavigation();
+  
   const logOut = async () => {
     await AsyncStorage.removeItem('token');
     navegation.navigate("SignIn")
   }
 
- const nuevoProyecto = async () =>{
-    navegation.navigate("NuevoProyecto")
+  const [avances, setAvances] = useState([]);
+  const route = useRoute();
+  const id = route.params.id;
+
+  
+  const { data, error, loading } = useQuery(MY_AVANCES,{ variables: { proyectoId:id }})
+  async function nuevoAvance (){
+    if (data) {
+      navegation.navigate("NuevoAvance",{ id:id})
+    }  
   }
-
-  const [proyectos, setProyectos] = useState([]);
-
-  const { data, error, loading } = useQuery(MY_PROYECTOS)
-
+ 
   useEffect(() => {
     if (error) {
-      alert("Error Cargando los proyectos. Intenta de Nuevo")
+      alert("Error Cargando los Avances. Intenta de Nuevo")
     }
   }, [error]);
 
   useEffect(() => {
     if (data) {
-      setProyectos(data.myProjects);
+        setAvances(data.myAvances);
     }
   }, [data]);
 
@@ -82,15 +82,14 @@ export default function ProyectosScreen() {
           Cerrar Sesión
         </Text>
       </Pressable>
-      
-      <Text style={styles.title}>LISTA DE PROYECTOS</Text>
+      <Text style={styles.title}>LISTA DE AVANCES</Text>
       <FlatList
-        data={proyectos}
-        renderItem={({item}) => <><ProyectoItem proyecto={item} /></>}
+        data={avances}
+        renderItem={({item}) => <><AvanceItem avance={item} /></>}
         style={{ width: '100%' }}
       />
       <Pressable
-      onPress={nuevoProyecto} 
+      onPress={nuevoAvance} 
       style={{
         backgroundColor:'blue',
         height:50,
@@ -107,7 +106,7 @@ export default function ProyectosScreen() {
           fontSize:18,
           fontWeight:"bold"
         }}>
-          Nuevo Proyecto
+          Nuevo Avance
         </Text>
       </Pressable>
     </View>
@@ -148,7 +147,5 @@ const styles = StyleSheet.create({
     marginHorizontal:"10%",
     marginBottom:30
   },
-  time: {
-    color: 'darkgrey'
-  }
+  
 });

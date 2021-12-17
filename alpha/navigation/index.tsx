@@ -25,6 +25,11 @@ import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../typ
 import LinkingConfiguration from './LinkingConfiguration';
 import ProyectosScreen from '../screens/ProyectosScreen';
 import InscripcionesScreen from '../screens/InscripcionesScreen';
+import AvancesScreen from '../screens/AvancesScreen';
+import ComentariosScreen from '../screens/ComentariosScreen';
+import NuevoAvanceScreen from '../screens/NuevoAvanceScreen';
+import EditarPerfilScreen from '../screens/EditarPerfilScreen';
+import ProyectoForm from '../screens/ProyectoForm';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -54,6 +59,11 @@ function RootNavigator() {
       <Stack.Screen name="Usuarios" component={UsuariosScreen} />
       <Stack.Screen name="Proyectos" component={ProyectosScreen} />
       <Stack.Screen name="Inscripciones" component={InscripcionesScreen} />
+      <Stack.Screen name="Avances" component={AvancesScreen} />
+      <Stack.Screen name="Comentarios" component={ComentariosScreen} />
+      <Stack.Screen name="NuevoAvance" component={NuevoAvanceScreen} />
+      <Stack.Screen name="EditarPerfil" component={EditarPerfilScreen} />
+      <Stack.Screen name="NuevoProyecto" component={ProyectoForm} />
     </Stack.Navigator>
   );
 }

@@ -65,6 +65,17 @@ const resolvers = {
         
         return await db.collection('avances').findOne({ _id: ObjectId(id) });
       },
+      myComentarios: async (_, {id}, { db, user }) => {  //Ver lista de comentarios
+        if (!user) { throw new Error('Error de Autenticación, por favor inicie Sesión'); }
+        return await db.collection('avances')   //busqueda
+                                  .find({ _id: ObjectId(id) })
+                                  .toArray();
+        },
+        getUser: async(_, { id }, { db, user }) => {  
+          if (!user) { throw new Error('Error de Autenticación, por favor inicie Sesión'); }
+          
+          return await db.collection('usuarios').findOne({ _id: ObjectId(id) });
+        },
   },
 
 //Mutationes
@@ -271,6 +282,9 @@ start();  //Arrancamos!
 
     myAvances(proyectoId: ID!):[avances!]!
     getAvances(id: ID!): avances
+
+    myComentarios(id: ID!):[avances!]!
+    getUser(id: ID!): user
   }
   
   type user{

@@ -37,7 +37,7 @@ const SignInScreen = () =>{
   if (data) {
     AsyncStorage.setItem('token', data.signIn.token)
       .then(() => {
-        navegation.navigate("Home")
+        navegation.navigate("Home",{id:data.signIn.user.id})
       })
   }
 
@@ -91,7 +91,7 @@ const SignInScreen = () =>{
           marginHorizontal:"35%"
         }}
       >
-        <text 
+        <Text 
           style={{
             color:"white",
             fontSize:18,
@@ -100,7 +100,7 @@ const SignInScreen = () =>{
           }}
         >
           Iniciar Sesión
-        </text>
+        </Text>
       </Pressable>
 
       <Pressable
@@ -114,7 +114,7 @@ const SignInScreen = () =>{
         }}
       >
         {loading && <ActivityIndicator />}
-        <text 
+        <Text 
           style={{
             color:"blue",
             fontSize:18,
@@ -123,7 +123,7 @@ const SignInScreen = () =>{
           }}
         >
           Registrese Aquí
-        </text>
+        </Text>
       </Pressable>    
 
     </View>

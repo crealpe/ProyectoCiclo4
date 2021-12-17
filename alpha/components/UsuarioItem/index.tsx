@@ -42,7 +42,7 @@ const UsuarioItem = ({ usuario }: UsuarioItemProps) => {
       updateUser({
       variables: {
         updateUserId: usuario.id,
-        estado: estado
+        estado: 'autorizado'
       }
     })
   };
@@ -51,7 +51,7 @@ const UsuarioItem = ({ usuario }: UsuarioItemProps) => {
     updateUser({
     variables: {
       updateUserId: usuario.id,
-      estado: estado
+      estado: "no autorizado"
     }
   })
 };
@@ -61,11 +61,9 @@ const UsuarioItem = ({ usuario }: UsuarioItemProps) => {
     
   }, [estado])
   
-  
-
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center'}}>
-      <Pressable onPress={onPress} style={styles.root}>
+      <Pressable  onPress={onPress} style={styles.root}>
       <View style={styles.iconContainer}>
         <FontAwesome5 name="user-check" size={24} color="white" />
       </View>
