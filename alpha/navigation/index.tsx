@@ -30,7 +30,7 @@ import AvancesScreen from '../screens/AvancesScreen';
 import ComentariosScreen from '../screens/ComentariosScreen';
 import NuevoAvanceScreen from '../screens/NuevoAvanceScreen';
 import EditarPerfilScreen from '../screens/EditarPerfilScreen';
-import ProyectoForm from '../screens/ProyectoForm';
+
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (

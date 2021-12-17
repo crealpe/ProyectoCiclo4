@@ -32,7 +32,7 @@ const ProjectCreationScreen = () => {
 				}
 			}
 		});
-		nav.navigate("Proyecto");
+		nav.navigate("Proyectos");
   }
 
 	const css = StyleSheet.create({
