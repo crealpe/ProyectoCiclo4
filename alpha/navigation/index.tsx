@@ -21,6 +21,7 @@ import UsuariosScreen from '../screens/UsuariosScreen';
 import SignInScreen from '../screens/SignInScreen';
 import SignUpScreen from '../screens/SignUpScreen';
 import SplashScreen from '../screens/SplashScreen';
+import ProyectoForm from '../screens/ProyectoForm';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 import ProyectosScreen from '../screens/ProyectosScreen';
