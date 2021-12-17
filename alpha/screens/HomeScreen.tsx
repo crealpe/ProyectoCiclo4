@@ -12,7 +12,7 @@ export default function HomeScreen() {
     await AsyncStorage.removeItem('token');
     navegation.navigate("SignIn")
   }
-  if (route.params === undefined)
+  if (route.params === undefined || route.params.id === undefined)
   {
     logOut(); 
   }
