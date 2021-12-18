@@ -13,7 +13,7 @@ const getToken = (user) => jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '
 const getUserFromToken = async (token, db) => {
   if (!token) { return null }
   const tokenData = jwt.verify(token, JWT_SECRET); //funcion de la libreria jsonwebtoken
-  if (!tokenData?.id) {
+  if (!tokenData.id) {
     return null;
   }
   return await db.collection('usuarios').findOne({ _id: ObjectId(tokenData.id) });  //busca el usuario con el _id igual al que reresa el ObjectId
@@ -293,10 +293,14 @@ const start = async () => {   //Iniciar Serviror
     });
 
     // Metodo listen, servidor iniciado
-    server.listen().then(({ url }) => {
+  /*  server.listen().then(({ url }) => {
     console.log(`🚀  Servidor listo y corriendo en ${url}`);
     });
-  }  
+  }  */
+  server.listen((process.env.PORT || 4000), function(){
+    console.log("listening on *:4000")
+  })
+
 start();  //Arrancamos!
 
 
