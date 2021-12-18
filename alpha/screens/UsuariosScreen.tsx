@@ -40,7 +40,7 @@ export default function UsuariosScreen() {
   
   useEffect(() => {
     if (error) {
-      alert("Error Cargando los usuarios. Intenta de Nuevo")
+      alert("No tiene permisos para cargar usuarios")
     }
   }, [error]);
   

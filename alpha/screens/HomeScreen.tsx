@@ -3,6 +3,7 @@ import { Pressable, StyleSheet } from 'react-native';
 import { Text, View } from '../components/Themed';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Token } from 'graphql';
 
 export default function HomeScreen() {
   const navegation= useNavigation();
@@ -10,7 +11,8 @@ export default function HomeScreen() {
   
   const logOut = async () => {
     await AsyncStorage.removeItem('token');
-    navegation.navigate("SignIn")
+    navegation.navigate("SignIn");
+    
   }
   
   const usuarios = async () =>{

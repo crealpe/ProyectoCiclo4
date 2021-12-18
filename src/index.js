@@ -30,7 +30,7 @@ const resolvers = {
     myUsers: async (_, __, { db, user }) => {  //Ver usuarios
       if (!user) { throw new Error('Error de Autenticación, por favor inicie Sesión'); }
       const us = await db.collection('usuarios').findOne({ _id: ObjectId(user._id) });
-      console.log("usuario",us)
+      
       if (us.rol==="administrador"){
         return await db.collection('usuarios').find().toArray();
       }else if (us.rol==="lider"){
@@ -39,9 +39,17 @@ const resolvers = {
     },
     myProjects: async (_, __, { db, user }) => {  //Ver lista de proyectos por lider
       if (!user) { throw new Error('Error de Autenticación, por favor inicie Sesión'); }
-      return await db.collection('proyectos')   //busqueda
+      const us = await db.collection('usuarios').findOne({ _id: ObjectId(user._id) });
+      
+      if (us.rol==='administrador'|| us.rol==='estudiante'){
+        return await db.collection('proyectos').find().toArray();
+      }else if (us.rol==="lider"){
+        return await db.collection('proyectos')   //busqueda
                                 .find({ liderId: user._id })
                                 .toArray();
+      }  
+      
+                               
     },
     getProject: async(_, { id }, { db, user }) => {  //Ver un proyecto por ID
       if (!user) { throw new Error('Error de Autenticación, por favor inicie Sesión'); }
@@ -91,7 +99,7 @@ Mutation: {
         const newUser={ //Creamos al nuevo usuario
             ...input,
             
-            password:hashedPassword,
+            //password:hashedPassword,
         }
     const result= await db.collection("usuarios").insertOne(newUser);  //Funcion asincrona que puede recibir 3 argumentos y regresa un objeto
     return{  //el esquema pide que se regrese un usuario cuando el proceso se haga bien, al igual que un token
@@ -102,8 +110,9 @@ Mutation: {
 
   signIn: async(root,{input},{db})=>{    //Iniciar Sesión
     const user = await db.collection('usuarios').findOne({ email: input.email }); //compara el email en el input con los que estan en la collecion user
-    const isPasswordCorrect = user && bcrypt.compareSync(input.password, user.password); //compara el hash del password en el input con los que estan en la collecion user
-    if (!user || !isPasswordCorrect) {  //Verificamos si ambas respuestas son true
+    //const isPasswordCorrect = user && bcrypt.compareSync(input.password, user.password); //compara el hash del password en el input con los que estan en la collecion user
+   // if (!user || !isPasswordCorrect) {  //Verificamos si ambas respuestas son true
+   if(!user || (input.password != user.password)){
       throw new Error('Credenciales erroneas :('); //sino son true, lanzamos error
     } 
     return {//si son true retornamos la información completa que hay del usuario en la collecion
@@ -113,15 +122,11 @@ Mutation: {
   },
   updateUser : async(_, {id, email, nombre, identificacion, password}, {db, user}) =>{   //Actualizar un usuario, La funcion pide el id del objeto a actualizar y el estado nuevo a asignar
   if(!user){console.log("No esta autenticado, por favor inicie sesión.")}  //Solo usuarios correctamente logueados lo pueden hacer
-  const hashedPassword=bcrypt.hashSync(password);
-  const isPasswordCorrect = user && bcrypt.compareSync(password, user.password); //compara el hash del password en el input con los que estan en la collecion user
-    if (!user || !isPasswordCorrect) {  //Verificamos si ambas respuestas son true
-      hashedPassword=user.password; //sino son true, lanzamos error
-    } 
+   
   const result= await db.collection("usuarios") 
                       .updateOne({_id:ObjectId(id)  //Se actualiza el documento que coincide en su id
                       },{
-                          $set:{email, nombre, identificacion, hashedPassword} 
+                          $set:{email, nombre, identificacion, password} 
                            //Se setea el nuevo titulo
                       }
   )//IMPORTANTE: Si nuestro proyecto necesita que mas campos sean editables, se deben establecer como argumentos y brindarselos a la funcion desde el front(apollo)

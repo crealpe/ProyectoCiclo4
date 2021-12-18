@@ -26,8 +26,6 @@ const SignInScreen = () =>{
   const [signIn, { data, error, loading }] = useMutation(SIGN_IN_MUTATION);
   const navegation= useNavigation();
 
-  
-
   useEffect(() => {
     if (error) {
       alert("Credeciales equivocadas, por favor intente de nuevo")

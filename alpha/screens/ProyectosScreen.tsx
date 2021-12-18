@@ -144,7 +144,7 @@ export default function ProyectosScreen() {
 const styles = StyleSheet.create({
   container: {
     padding: 12,
-    width:"80%",
+    width:"90%",
     marginHorizontal:"10%"
   },
   root: {

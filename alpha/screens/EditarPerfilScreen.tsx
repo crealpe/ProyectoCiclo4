@@ -46,10 +46,9 @@ const EditarPerfilScreen =() => {
   // mutation[0] : A function to trigger the mutation
   // mutation[1] : result object 
   //    { data,error, loading }
-  const { data, error, loading } = useQuery(GET_USUARIO)
-  const [updateUser] = useMutation(UPDATE_USER);
+  const { data, error, loading, refetch } = useQuery(GET_USUARIO)
+  const [updateUser,{error:createIerror}] = useMutation(UPDATE_USER);
   
-
   useEffect(() => {
     if (error) {
       alert("Error Cargando el usuario. Intenta de Nuevo")
@@ -62,6 +61,7 @@ const EditarPerfilScreen =() => {
         setNombre(data.getUser.nombre)
         setIdentificacion(data.getUser.identificacion)
         setPassword(data.getUser.password)
+        refetch();
     }
   }, [data]);
 
@@ -76,6 +76,13 @@ const EditarPerfilScreen =() => {
         password:password
       }
     })
+    if(!createIerror){
+      alert("Usuario Editado correctamente")  
+      navegation.navigate("Home");
+    }else{
+      alert("Error editando usuario")    
+    }
+  
   }
  
 
@@ -179,7 +186,5 @@ onPress={onSubmit}
 }
 
 export default EditarPerfilScreen
-function user(arg0: string, user: any) {
-  throw new Error('Function not implemented.');
-}
+
 
