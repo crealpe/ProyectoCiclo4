@@ -295,8 +295,8 @@ const start = async () => {   //Iniciar Serviror
     // Metodo listen, servidor iniciado
   /*  server.listen().then(({ url }) => {
     console.log(`🚀  Servidor listo y corriendo en ${url}`);
-    });
-  }  */
+    });*/
+  }  
   server.listen((process.env.PORT || 4000), function(){
     console.log("listening on *:4000")
   })
@@ -310,13 +310,10 @@ start();  //Arrancamos!
     myUsers:[user!]!
     myProjects:[proyectos!]!
     getProject(id: ID!): proyectos
-
     myInscripciones(proyectoId: ID!):[inscripciones!]!
     getInscripcion(id: ID!): inscripciones
-
     myAvances(proyectoId: ID!):[avances!]!
     getAvances(id: ID!): avances
-
     myComentarios(id: ID!):[avances!]!
     getUser: user
   }
@@ -343,7 +340,6 @@ start();  //Arrancamos!
       estado: String!
       fase: String
   }
-
   type inscripciones{
     id: ID!
     proyectoId:[proyectos!]!
@@ -352,7 +348,6 @@ start();  //Arrancamos!
     fechaIngreso: String
     fechaEgreso: String
   }
-
   type avances{
     id: ID!
     proyectoId:[proyectos!]!
@@ -366,16 +361,12 @@ start();  //Arrancamos!
     signIn(input:SignInInput):AuthUser!
     updateUser(id:ID!, email:String,identificacion:String,nombre:String,password:String):user!
     updateUserEstado(id:ID!, estado: String):user!
-
     createProyecto(input:proyectoInput):proyectos!
     updateProyecto(id:ID!, fechaInicio: String,fechaFin: String,estado: String,fase:String):proyectos!
-
     createInscripcion(proyectoId: ID!):inscripciones!
     updateInscripcion(id:ID!,estado: String,fechaIngreso: String,fechaEgreso: String):inscripciones!
-
     createAvance(proyectoId: ID!,descripcion: String!):avances!
     addComentarioToAvance(AvanceId: ID!, ComentarioLider:String!): avances
-
     
   }
   input SignUpInput{
@@ -402,5 +393,4 @@ start();  //Arrancamos!
       token: String!
   }
   
-
-  `};
+  `;
